@@ -1,0 +1,21 @@
+[project]
+name = "slackdump-render"
+version = "0.1.0"
+description = "Renders a slackdump archive as a static HTML website"
+authors = [
+    {name = "Jonathan Aceituno",email = "oin@users.noreply.github.com"}
+]
+license = {text = "GPLv3"}
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "jinja2 (>=3.1.6,<4.0.0)",
+    "peewee (>=3.18.2,<4.0.0)"
+]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+package-mode = false
