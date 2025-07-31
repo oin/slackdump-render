@@ -7,7 +7,7 @@
 			"label": "Test",
 			"type": "shell",
 			"problemMatcher": "$python",
-			"command": "export DUMPDIR=~/Downloads/slackdump/slackdump_20250725_124154/ && poetry run python -m src.slackdump-render $DUMPDIR/slackdump.sqlite -c design_sonore && open $DUMPDIR/html/design_sonore.html",
+			"command": "poetry run python -m src.slackdump-render ${config:test.dumpdir}/slackdump.sqlite -c design_sonore && open ${config:test.dumpdir}/html/design_sonore.html",
 			"group": {
 				"kind": "test",
 				"isDefault": true
@@ -17,7 +17,7 @@
 			"label": "Make all",
 			"type": "shell",
 			"problemMatcher": "$python",
-			"command": "export DUMPDIR=~/Downloads/slackdump/slackdump_20250725_124154/ && poetry run python -m src.slackdump-render $DUMPDIR/slackdump.sqlite && open $DUMPDIR/html"
+			"command": "poetry run python -m src.slackdump-render ${config:test.dumpdir}/slackdump.sqlite && open ${config:test.dumpdir}/html"
 		}
 	]
 }
