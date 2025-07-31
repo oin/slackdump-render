@@ -1,0 +1,23 @@
+{
+	// See https://go.microsoft.com/fwlink/?LinkId=733558
+	// for the documentation about the tasks.json format
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Test",
+			"type": "shell",
+			"problemMatcher": "$python",
+			"command": "export DUMPDIR=~/Downloads/slackdump/slackdump_20250725_124154/ && poetry run python -m src.slackdump-render $DUMPDIR/slackdump.sqlite -c design_sonore && open $DUMPDIR/html/design_sonore.html",
+			"group": {
+				"kind": "test",
+				"isDefault": true
+			}
+		},
+		{
+			"label": "Make all",
+			"type": "shell",
+			"problemMatcher": "$python",
+			"command": "export DUMPDIR=~/Downloads/slackdump/slackdump_20250725_124154/ && poetry run python -m src.slackdump-render $DUMPDIR/slackdump.sqlite && open $DUMPDIR/html"
+		}
+	]
+}

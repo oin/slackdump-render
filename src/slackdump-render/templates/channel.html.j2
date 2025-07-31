@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>{{ channel.name }}</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta charset="UTF-8">
+		<style type="text/css">
+{# * {
+	outline: 1px solid red;
+} #}
+
+body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+h1 {
+	margin: 20px;
+	font-size: 1.5em;
+	color: #1d1c1d;
+	margin-bottom: 2em;
+}
+
+article {
+	margin: 0 20px;
+}
+
+.messages {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+
+.date-separator {
+	position: sticky;
+	top: 1em;
+	margin: 10px 18px 10px auto;
+	display: block;
+	width: fit-content;
+	text-align: right;
+	font-size: 0.8em;
+}
+
+.date-separator a {
+	background-color: #aaa;
+	color: white;
+	border-radius: 1em;
+	padding: 4px 10px;
+	text-decoration: none;
+}
+.date-separator a:hover {
+	background-color: #1264a3;
+}
+
+.message {
+	padding: 4px 8px;
+	margin-bottom: 0;
+	background-color: transparent;
+	border-radius: 0;
+}
+
+.message.separate {
+	border-top: 1px solid #f0f0f0;
+}
+
+.message.child {
+	box-sizing: border-box;
+	margin-left: 20px;
+	border-left: 2px solid #ddd;
+	background-color: transparent;
+}
+
+.author {
+	font-size: 0.8em;
+	color: #999;
+	font-weight: bold;
+}
+.author img.avatar {
+	height: 1em;
+	width: 1em;
+	border-radius: 4px;
+	vertical-align: middle;
+	margin-top: -2px;
+	object-fit: cover;
+}
+
+time {
+	font-size: 0.8em;
+	color: #999;
+	float: right;
+	margin-top: 2px;
+	margin-right: 20px;
+	clear: both;
+}
+
+time a {
+	color: #999;
+	text-decoration: none;
+}
+time a:hover {
+	color: #1264a3;
+}
+
+.message-text {
+	margin: 2px 0 4px;
+}
+
+.message-text p {
+	margin: 0 0 0.5em 0;
+	padding: 0;
+}
+
+.message-text a {
+	word-break: break-word;
+	overflow-wrap: anywhere;
+}
+
+.files {
+	list-style-type: none;
+	padding: 0;
+	margin-top: 4px;
+}
+
+.files a {
+	color: #1d9bd1;
+	text-decoration: none;
+	font-size: 0.9em;
+}
+
+.files a img.thumbnail {
+	display: block;
+	max-width: 100%;
+}
+
+.files a:hover {
+	text-decoration: underline;
+}
+
+.mention {
+	color: #888;
+}
+
+ul {
+	clear: both;
+}
+
+.skip-link {
+	font-size: 0.8em;
+	background-color: #1264a3;
+	color: white;
+	border-radius: 1em;
+	padding: 4px 10px;
+	text-decoration: none;
+}
+.skip-link:hover {
+	background-color: #0a5d8c;
+}
+
+		</style>
+	</head>
+	<body>
+		<a name="top"></a>
+		<h1>
+			{{ channel.name }}
+			<a href="#bottom" class="skip-link">↓</a>
+		</h1>
+
+		<article>
+			<ul class="messages">
+				{% set ns = namespace(previous_author=None, previous_date=None) %}
+				{% for message in messages %}
+				{% if not message.parent and (not ns.previous_date or ns.previous_date < message.date.date()) %}
+				{% set message_date = message.date.strftime("%Y-%m-%d") %}
+				<div id="date-{{ message_date }}"></div>
+				<li class="date-separator">
+					<a href="#date-{{ message_date }}">{{ message_date }}</a>
+				</li>
+				{% set ns.previous_date = message.date.date() %}
+				{% endif %}
+				<li id="message-{{ message.id }}" class="message {{ 'child' if message.parent else '' }}{{ 'separate' if ns.previous_author != message.user.id else '' }}">
+					<time>
+					<a href="#message-{{ message.id }}">
+						{{ message.date.strftime("%H:%M") }}
+						{# {% if message.parent %} #}
+						• {{ message.date.strftime("%Y-%m-%d") }}
+						{# {% endif %} #}
+					</a>
+					</time>
+					{% if ns.previous_author != message.user.id %}
+						<span class="author">
+							{{ message.user.realname if message.user.realname else message.user.name }}
+							{% if message.user.avatar_path %}
+							<img src="{{ message.user.avatar_path }}" alt="{{ message.user.name }}" class="avatar">
+							{% endif %}
+						</span>
+					{% endif %}
+					<div class="message-text">
+						{{ message.text | slackparse | safe }}
+					</div>
+					{% if message.files %}
+					<ul class="files">
+						{% for file in message.files %}
+						<li>
+						<a href="{{ file.path }}">
+							{% if file.thumbnail_path %}
+							<img src="{{ file.thumbnail_path }}" alt="{{ file.name }}" class="thumbnail">
+							{% endif %}
+							{{ file.name }}
+						</a>
+						</li>
+						{% endfor %}
+					</ul>
+					{% endif %}
+				{% set ns.previous_author = message.user.id %}
+				</li>
+				{% endfor %}
+			</ul>
+			<a name="bottom"></a>
+		</article>
+		<h1><a href="#top" class="skip-link">↑</a>
+		</h1>
+	</body>
+</html>
