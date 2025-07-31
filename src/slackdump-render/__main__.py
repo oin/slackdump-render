@@ -9,6 +9,8 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 from tqdm import tqdm
 from dataclasses import dataclass
 from typing import Optional
+from unicodedata import normalize
+from urllib.parse import quote
 
 @dataclass
 class User:
@@ -240,6 +242,7 @@ def main():
 	)
 	user_mention_template = env.get_template("user-mention.html.j2")
 	env.filters["slackparse"] = lambda v: slackparse(v, users, user_mention_template)
+	env.filters["safe_url"] = lambda v: quote(normalize("NFC", v), safe="/")
 	channel_template = env.get_template("channel.html.j2")
 
 	for channel in tqdm(channels.values(), desc="Rendering"):

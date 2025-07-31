@@ -200,9 +200,9 @@ ul {
 					<ul class="files">
 						{% for file in message.files %}
 						<li>
-						<a href="{{ file.path }}">
+						<a href="{{ file.path | safe_url }}">
 							{% if file.thumbnail_path %}
-							<img src="{{ file.thumbnail_path }}" alt="{{ file.name }}" class="thumbnail">
+							<img src="{{ file.thumbnail_path | safe_url }}" alt="{{ file.name }}" class="thumbnail">
 							{% endif %}
 							{{ file.name }}
 						</a>
